@@ -1,10 +1,17 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
+from pypdf import PdfReader
 
 app = FastAPI()
 
 @app.get("/")
-def read_root():
+async def read_root():
     return {"message": "Hello World"}
+
+@app.post("/pdf/pages")
+async def count_pages(file: UploadFile = File(...)):
+    reader = PdfReader(file.file)
+    pages = len(reader.pages)
+    return {"pages": pages}
 
 if __name__ == "__main__":
     import uvicorn
