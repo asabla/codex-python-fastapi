@@ -28,6 +28,12 @@ Run the tests:
 uv run python -m pytest
 ```
 
+## Continuous Integration
+
+The project includes a GitHub Actions workflow that automatically runs the
+tests for every push and pull request. The workflow definition lives in
+`.github/workflows/ci.yml`.
+
 ## API
 
 - `GET /` – returns a simple greeting
