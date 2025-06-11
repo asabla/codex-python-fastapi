@@ -19,6 +19,20 @@ async def count_pages(file: UploadFile = File(...)):
     except PdfReadError:
         raise HTTPException(status_code=400, detail="Invalid PDF file")
 
+
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    """Upload a file ensuring it's not empty and has an allowed type."""
+    allowed_types = {"application/pdf", "image/png", "text/markdown"}
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Invalid file type")
+
+    contents = await file.read()
+    if not contents:
+        raise HTTPException(status_code=400, detail="Empty file")
+
+    return {"filename": file.filename, "size": len(contents)}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
