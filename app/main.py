@@ -35,8 +35,8 @@ async def upload_file(file: UploadFile = File(...)):
     """Upload a file ensuring it's not empty and has an allowed type."""
     if file.content_type not in ALLOWED_TYPES:
         raise HTTPException(
-            status_code=400, 
-            detail=f"Invalid file type. Allowed types: {', '.join(ALLOWED_TYPES)}"
+            status_code=400,
+            detail=f"Invalid file type. Allowed types: {', '.join(ALLOWED_TYPES)}",
         )
 
     MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
@@ -54,6 +54,8 @@ async def upload_file(file: UploadFile = File(...)):
 
     return {"filename": file.filename, "size": total_size}
 
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
