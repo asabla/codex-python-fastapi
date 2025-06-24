@@ -5,6 +5,7 @@ from pypdf.errors import PdfReadError
 
 
 ALLOWED_TYPES = {"application/pdf", "image/png", "text/markdown"}
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 app = FastAPI()
 
@@ -22,6 +23,8 @@ async def count_pages(file: UploadFile = File(...)):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Invalid content type")
 
+    if len(contents) > MAX_FILE_SIZE:
+        raise HTTPException(status_code=400, detail="File too large")
     try:
         reader = PdfReader(file.file)
         pages = len(reader.pages)
