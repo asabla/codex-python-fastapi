@@ -4,9 +4,11 @@ from pypdf.errors import PdfReadError
 
 app = FastAPI()
 
+
 @app.get("/")
 async def read_root():
     return {"message": "Hello World"}
+
 
 @app.post("/pdf/pages")
 async def count_pages(file: UploadFile = File(...)):
@@ -23,6 +25,8 @@ async def count_pages(file: UploadFile = File(...)):
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     """Upload a file ensuring it's not empty and has an allowed type."""
+
+
     if file.content_type not in ALLOWED_TYPES:
         raise HTTPException(
             status_code=400, 
