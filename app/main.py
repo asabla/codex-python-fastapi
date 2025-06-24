@@ -21,6 +21,7 @@ app.add_api_route("/health", health([healthy]))
 async def count_pages(file: UploadFile = File(...)):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Invalid content type")
+
     try:
         reader = PdfReader(file.file)
         pages = len(reader.pages)
@@ -33,14 +34,15 @@ async def count_pages(file: UploadFile = File(...)):
 async def upload_file(file: UploadFile = File(...)):
     """Upload a file ensuring it's not empty and has an allowed type."""
     if file.content_type not in ALLOWED_TYPES:
-    if file.content_type not in ALLOWED_TYPES:
         raise HTTPException(
             status_code=400, 
-            detail=f"Invalid file type. Allowed types: {', '.join(allowed_types)}"
+            detail=f"Invalid file type. Allowed types: {', '.join(ALLOWED_TYPES)}"
         )
+
     MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
     total_size = 0
     contents = b""
+
     async for chunk in file.file:
         total_size += len(chunk)
         if total_size > MAX_FILE_SIZE:
