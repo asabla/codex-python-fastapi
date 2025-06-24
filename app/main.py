@@ -23,10 +23,16 @@ async def count_pages(file: UploadFile = File(...)):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Invalid content type")
 
+    # Read file content instead of checking length directly
+    contents = await file.read()
     if len(contents) > MAX_FILE_SIZE:
         raise HTTPException(status_code=400, detail="File too large")
+
     try:
-        reader = PdfReader(file.file)
+        # Create a PdfReader from the contents
+        from io import BytesIO
+
+        reader = PdfReader(BytesIO(contents))
         pages = len(reader.pages)
         return {"pages": pages}
     except PdfReadError:
@@ -39,18 +45,15 @@ async def upload_file(file: UploadFile = File(...)):
     if file.content_type not in ALLOWED_TYPES:
         raise HTTPException(
             status_code=400,
-            detail=f"Invalid file type. Allowed types: {', '.join(ALLOWED_TYPES)}",
+            detail="Invalid file type",
         )
 
-    MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
-    total_size = 0
-    contents = b""
+    # Read file content
+    contents = await file.read()
+    total_size = len(contents)
 
-    async for chunk in file.file:
-        total_size += len(chunk)
-        if total_size > MAX_FILE_SIZE:
-            raise HTTPException(status_code=400, detail="File too large")
-        contents += chunk
+    if total_size > MAX_FILE_SIZE:
+        raise HTTPException(status_code=400, detail="File too large")
 
     if not contents:
         raise HTTPException(status_code=400, detail="Empty file")
