@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi_health import health
 from pypdf import PdfReader
 from pypdf.errors import PdfReadError
 
@@ -8,9 +9,12 @@ ALLOWED_TYPES = {"application/pdf", "image/png", "text/markdown"}
 app = FastAPI()
 
 
-@app.get("/")
-async def read_root():
-    return {"message": "Hello World"}
+def healthy() -> bool:
+    """Simple health check condition."""
+    return True
+
+
+app.add_api_route("/health", health([healthy]))
 
 
 @app.post("/pdf/pages")

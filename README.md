@@ -36,5 +36,6 @@ tests for every push and pull request. The workflow definition lives in
 
 ## API
 
-- `GET /` – returns a simple greeting
+- `GET /health` – simple health check
 - `POST /pdf/pages` – upload a PDF file and get the page count
+- `POST /upload` – upload a non-empty PDF, PNG, or Markdown file

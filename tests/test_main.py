@@ -5,10 +5,10 @@ from app.main import app
 client = TestClient(app)
 
 
-def test_read_root():
-    response = client.get("/")
+def test_health_check():
+    response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"message": "Hello World"}
+    assert response.json() == {}
 
 
 def test_count_pages(tmp_path):
