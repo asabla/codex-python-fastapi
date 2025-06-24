@@ -28,11 +28,19 @@ async def upload_file(file: UploadFile = File(...)):
             status_code=400, 
             detail=f"Invalid file type. Allowed types: {', '.join(allowed_types)}"
         )
-    contents = await file.read()
+    MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+    total_size = 0
+    contents = b""
+    async for chunk in file.file:
+        total_size += len(chunk)
+        if total_size > MAX_FILE_SIZE:
+            raise HTTPException(status_code=400, detail="File too large")
+        contents += chunk
+
     if not contents:
         raise HTTPException(status_code=400, detail="Empty file")
 
-    return {"filename": file.filename, "size": len(contents)}
+    return {"filename": file.filename, "size": total_size}
 
 if __name__ == "__main__":
     import uvicorn
