@@ -23,8 +23,7 @@ async def count_pages(file: UploadFile = File(...)):
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     """Upload a file ensuring it's not empty and has an allowed type."""
-    allowed_types = {"application/pdf", "image/png", "text/markdown"}
-    if file.content_type not in allowed_types:
+    if file.content_type not in ALLOWED_TYPES:
         raise HTTPException(status_code=400, detail="Invalid file type")
 
     contents = await file.read()
