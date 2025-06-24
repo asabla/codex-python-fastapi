@@ -24,8 +24,10 @@ async def count_pages(file: UploadFile = File(...)):
 async def upload_file(file: UploadFile = File(...)):
     """Upload a file ensuring it's not empty and has an allowed type."""
     if file.content_type not in ALLOWED_TYPES:
-        raise HTTPException(status_code=400, detail="Invalid file type")
-
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid file type. Allowed types: {', '.join(allowed_types)}"
+        )
     contents = await file.read()
     if not contents:
         raise HTTPException(status_code=400, detail="Empty file")
