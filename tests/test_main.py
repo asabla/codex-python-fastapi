@@ -32,7 +32,8 @@ def test_upload_pdf(tmp_path):
     """Uploading a non-empty PDF should succeed."""
     pdf_path = tmp_path / "upload.pdf"
     writer = PdfWriter()
-    writer.add_blank_page(width=72, height=72)
+    # writer.add_blank_page(width=72, height=72)
+    writer.add_page(writer.add_blank_page(width=72, height=72))
 
     with open(pdf_path, "wb") as f:
         writer.write(f)
